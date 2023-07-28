@@ -1,0 +1,23 @@
+---
+- name: Ensure necessary directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "./services/pihole"
+    - "/meta/user/T7/pihole/etc-pihole"
+    - "/meta/user/T7/pihole/etc-dnsmasq.d"
+
+- name: Copy the docker-compose.yml file
+  ansible.builtin.copy:
+    src: "./services/pihole/docker-compose.yml"
+    dest: "./services/pihole/docker-compose.yml"
+    owner: user
+    group: user
+    mode: 0644
+
+- name: Deploy Pi-hole service using Docker Compose
+  ansible.builtin.docker_compose:
+    project_src: ./services/pihole
+    state: present
+    build: no

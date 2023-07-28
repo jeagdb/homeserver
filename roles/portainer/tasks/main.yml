@@ -1,0 +1,21 @@
+---
+- name: Ensure necessary directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "./services/portainer"
+
+- name: Copy the docker-compose.yml file
+  ansible.builtin.copy:
+    src: "./services/portainer/docker-compose.yml"
+    dest: "./services/portainer/docker-compose.yml"
+    owner: user
+    group: user
+    mode: 0644
+
+- name: Deploy Portainer service using Docker Compose
+  ansible.builtin.docker_compose:
+    project_src: ./services/portainer
+    state: present
+    build: no

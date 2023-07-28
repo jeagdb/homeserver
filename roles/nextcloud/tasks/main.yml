@@ -1,0 +1,41 @@
+---
+- name: Ensure necessary directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+  loop:
+    - "./services/nextcloud"
+    - "/media/user/T7/nextcloud"
+    - "/media/user/T7/nextcloud/db"
+    - "/media/user/T7/nextcloud/data"
+    - "/media/user/T7/nextcloud/config"
+
+
+- name: Copy the docker-compose.yml file
+  ansible.builtin.copy:
+    src: "./services/nextcloud/docker-compose.yml"
+    dest: "./services/nextcloud/docker-compose.yml"
+    owner: user
+    group: user
+    mode: 0644
+
+- name: Deploy Nextcloud service using Docker Compose
+  community.docker.docker_compose:
+    project_src: "./services/nextcloud"
+    state: present
+    recreate: always
+    pull: yes
+  register: nextcloud_deployment_result
+
+- name: Wait for Nextcloud to be ready
+  ansible.builtin.uri:
+    url: "http://localhost:8080"
+    status_code: 200
+    timeout: 30
+  register: nextcloud_status
+  until: nextcloud_status.status == 200
+  retries: 20
+  delay: 10

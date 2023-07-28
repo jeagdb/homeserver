@@ -1,0 +1,24 @@
+---
+- name: Ensure necessary directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - ./services/ubooquity
+    - /media/user/T7/ubooquity
+    - /media/user/T7/ubooquity/books
+    - /media/user/T7/ubooquity/comics
+
+- name: Copy the docker-compose.yml file
+  ansible.builtin.copy:
+    src: ./services/ubooquity/docker-compose.yml
+    dest: ./services/ubooquity/docker-compose.yml
+    owner: user
+    group: user
+    mode: 0644
+
+- name: Deploy Ubooquity service using Docker Compose
+  ansible.builtin.docker_compose:
+    project_src: ./services/ubooquity
+    state: present
+    build: no

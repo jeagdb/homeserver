@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /media/user/T7/portainer:/data
+    ports:
+      - 9000:9000
+    restart: unless-stopped

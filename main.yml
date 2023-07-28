@@ -1,0 +1,11 @@
+---
+- name: Set up a Raspberry Pi home server with Docker services
+  hosts: rpi
+  become: yes
+  gather_facts: yes
+  roles:
+    - portainer
+    - cockpit
+    - nextcloud
+    - ubooquity
+    - pihole
