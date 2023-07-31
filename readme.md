@@ -14,5 +14,6 @@ To scan local network ips: `$ nmap -sP [ip-address]/24`
 - files to update before (custom environment variables): 
   - services/nextcloud/docker-compose.yml
   - services/pihole/docker-compose.yml
+  - inventory.ini
 
 `$ ansible-playbook main.yml`
